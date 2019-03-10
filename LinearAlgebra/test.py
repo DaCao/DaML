@@ -1,24 +1,22 @@
-
-def pivotize(m):
-    """Creates the pivoting matrix for m."""
-    n = len(m)
-    ID = [[float(i == j) for i in range(n)] for j in range(n)]
-    for j in range(n):
-        row = max(range(j, n), key=lambda i: abs(m[i][j]))
-        print(j, row)
-        if j != row:
-            ID[j], ID[row] = ID[row], ID[j]
-    return ID
-
+from LinearAlgebra.tools import mat_multiply
 
 
 
 if __name__ == '__main__':
 
-    m = [[5,2,6,2],
-         [6,7,6,3],
-         [2,5,2,6],
-         [8,1,1,1]]
+
+
+
+    m = [[1,2,6,2],
+         [4,4,6,3],
+         [6,5,2,6],
+         [9,3,9,9]]
+
+
+
+    # m = [[1,6,3],
+    #      [4,5,6],
+    #      [7,2,0]]
 
     for row in m:
         print(row)
@@ -28,11 +26,3 @@ if __name__ == '__main__':
     for row in pm:
         print(row)
 
-    n = len(m)
-    ID = [[float(i == j) for i in range(n)] for j in range(n)]
-    print('---------')
-    for row in ID:
-        print(row)
-
-    TB = zip(*m)
-    print(TB)
