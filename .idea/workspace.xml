@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4fb488a7-e5ff-4ffe-9f83-1b5b8eff8ac3" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/LinearAlgebra/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/LinearAlgebra/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LinearAlgebra/draft.py" beforeDir="false" afterPath="$PROJECT_DIR$/LinearAlgebra/draft.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LinearAlgebra/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/LinearAlgebra/tools.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,22 +23,22 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="5" />
+          <entry key="py" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="5" />
+          <entry key="Python" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="3087" />
+          <entry key="py" value="3803" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="3087" />
+          <entry key="Python" value="3803" />
         </counts>
       </usages-collector>
     </session>
@@ -48,16 +48,18 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/LinearAlgebra/tools.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="816">
-              <caret line="141" column="42" selection-start-line="141" selection-start-column="42" selection-end-line="141" selection-end-column="42" />
+            <state relative-caret-position="119">
+              <caret line="163" column="4" selection-start-line="163" selection-start-column="4" selection-end-line="163" selection-end-column="4" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <marker date="1552186345223" expanded="true" signature="249:261" ph="..." />
-                <marker date="1552186345223" expanded="true" signature="283:674" ph="..." />
-                <marker date="1552186345223" expanded="true" signature="933:1197" ph="..." />
-                <marker date="1552186345223" expanded="true" signature="1213:1557" ph="..." />
-                <marker date="1552186345223" expanded="true" signature="1583:1588" ph="..." />
-                <marker date="1552186345223" expanded="true" signature="2509:3475" ph="..." />
+                <marker date="1552192251707" expanded="true" signature="232:617" ph="..." />
+                <marker date="1552192251707" expanded="true" signature="729:763" ph="..." />
+                <marker date="1552192251707" expanded="true" signature="785:1174" ph="..." />
+                <marker date="1552192251707" expanded="true" signature="1200:1464" ph="..." />
+                <marker date="1552192251707" expanded="true" signature="1480:1824" ph="..." />
+                <marker date="1552192251707" expanded="true" signature="1850:1855" ph="..." />
+                <marker date="1552192251707" expanded="true" signature="2776:3726" ph="..." />
+                <marker date="1552192251707" expanded="true" signature="3737:4400" ph="..." />
               </folding>
             </state>
           </provider>
@@ -74,11 +76,7 @@
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/LinearAlgebra/draft.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="112">
-              <caret line="10" column="14" lean-forward="true" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
-            </state>
-          </provider>
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -105,8 +103,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/LinearAlgebra/draft.py" />
         <option value="$PROJECT_DIR$/LinearAlgebra/test.py" />
+        <option value="$PROJECT_DIR$/LinearAlgebra/draft.py" />
         <option value="$PROJECT_DIR$/LinearAlgebra/tools.py" />
       </list>
     </option>
@@ -247,12 +245,12 @@
     <frame x="9" y="23" width="1431" height="797" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21276596" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21276596" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.23404256" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.23404256" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -270,13 +268,8 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/LinearAlgebra/__init__.py" />
     <entry file="file://$PROJECT_DIR$/LinearAlgebra/draft.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="10" column="14" lean-forward="true" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/LinearAlgebra/test.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -285,18 +278,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/LinearAlgebra/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/LinearAlgebra/tools.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
-          <caret line="141" column="42" selection-start-line="141" selection-start-column="42" selection-end-line="141" selection-end-column="42" />
+        <state relative-caret-position="119">
+          <caret line="163" column="4" selection-start-line="163" selection-start-column="4" selection-end-line="163" selection-end-column="4" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <marker date="1552186345223" expanded="true" signature="249:261" ph="..." />
-            <marker date="1552186345223" expanded="true" signature="283:674" ph="..." />
-            <marker date="1552186345223" expanded="true" signature="933:1197" ph="..." />
-            <marker date="1552186345223" expanded="true" signature="1213:1557" ph="..." />
-            <marker date="1552186345223" expanded="true" signature="1583:1588" ph="..." />
-            <marker date="1552186345223" expanded="true" signature="2509:3475" ph="..." />
+            <marker date="1552192251707" expanded="true" signature="232:617" ph="..." />
+            <marker date="1552192251707" expanded="true" signature="729:763" ph="..." />
+            <marker date="1552192251707" expanded="true" signature="785:1174" ph="..." />
+            <marker date="1552192251707" expanded="true" signature="1200:1464" ph="..." />
+            <marker date="1552192251707" expanded="true" signature="1480:1824" ph="..." />
+            <marker date="1552192251707" expanded="true" signature="1850:1855" ph="..." />
+            <marker date="1552192251707" expanded="true" signature="2776:3726" ph="..." />
+            <marker date="1552192251707" expanded="true" signature="3737:4400" ph="..." />
           </folding>
         </state>
       </provider>

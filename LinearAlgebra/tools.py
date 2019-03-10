@@ -4,20 +4,40 @@ from functools import reduce
 
 def transpose(m):
     '''
-
     :param m:
-    :return:
+    :return: transpose of m
     '''
     m_transpose = [[x for x in row] for row in list(zip(*m))]
     return m_transpose
 
 
 def is_identity(M):
-    pass
+    """
+    Return True if M is identitu matrix
+    :param M:
+    :return: Boolean
+    """
+    # must be square matrix
+    if len(M)!=len(M[0]):
+        return False
+
+    # diagonal must all be 1
+    for i in range(len(M)):
+        if float(M[i][i]) != 0.0:
+            return False
+
+    # other positions must all be 0
+    return set([float(sum(row)) for row in M]) == set([1.0])
+
 
 
 def is_singular(M):
-    pass
+    '''
+    A matrix is singular iff its determinant is 0
+    :param M:
+    :return:
+    '''
+    return determinant(M) == 0
 
 
 def is_permutation(M):
@@ -39,22 +59,6 @@ def is_permutation(M):
     if s == {1}:
         return True
     return False
-
-
-def inv(M):
-    '''
-    Compute the inverse of a matrix
-
-    - Inverse of permutation matrix is itself
-
-
-
-    :param m: 2d numpy array of dimension n by n
-    :return: inverse of m
-    '''
-    if is_permutation(M):
-        return M
-
 
 
 
@@ -125,14 +129,12 @@ def determinant(M):
     The LU decomposition computes three matrices such that PA = LU ----> A = inv(P)LU ----> A = PLU
     Thus, det(A) = det(P)det(L)det(U)
 
-    :param m:
-    :return:
+    :param M: matrix
+    :return: determinant of M
     '''
 
     if is_identity(M):
         return 1
-    if is_singular(M):
-        return 0
     if is_permutation(M):
         return -1 ** sum([1 for i, row in enumerate(M) if row[i] != 1])
 
@@ -152,6 +154,45 @@ def determinant(M):
 
 
 
+
+def svd(M):
+    '''
+    Singular Value Decomposition
+    :param M:
+    :return:
+    '''
+
+
+
+
+
+    return
+
+
+
+def inv(M):
+    '''
+    Compute the inverse of a matrix
+
+    - Inverse of permutation matrix is itself
+    - A singular matrix is a square matrix that does not have a matrix inverse.
+
+    Implement 3 methods:  https://www.zhihu.com/question/19584577/answer/359381546
+    1. Gaussian Elimination method
+    2. LU decomposition method  (use parallel computation!!)
+    3. svd method
+
+    :param m: 2d numpy array of dimension n by n
+    :return: inverse of m
+    '''
+    if is_permutation(M):
+        return M
+    if is_singular(M):
+        print('Input matrix is singular and has no inverse! ')
+        return False
+
+
+    # 1. Gaussian Elimination method
 
 
 
