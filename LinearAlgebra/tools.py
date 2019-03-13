@@ -2,6 +2,18 @@ import numpy as np
 from functools import reduce
 
 
+
+
+def diag(M):
+    '''
+    Return the diagonal of n by n matrix as a list
+    :param M: n by n 2d list/array
+    :return: 1d array of length n
+    '''
+    return [M[i][i] for i in range(len(M))]
+
+
+
 def transpose(m):
     '''
     :param m:
@@ -91,6 +103,17 @@ def pivotize(M):
 
 
 
+
+def QR_decomposition(M):
+    '''
+    https://en.wikipedia.org/wiki/QR_decomposition
+    :param M:
+    :return:
+    '''
+
+    pass
+
+
 def LUdecomposition(M):
     '''
     Computes the Lower-Upper decomposition of matrix M
@@ -166,20 +189,109 @@ def svd(M):
 
 
 
+
     return
 
 
 
-def inv(M):
+def Rayleigh_quotient(A, v):
+    '''
+    Computes eigen-value from given matrix A and eigen-vector v by Rayleigh quotient
+    :param A:
+    :param v:
+    :return:
+    '''
+
+    pass
+
+
+
+
+
+
+
+def power_iter(A, max_iter = 1000, thres=0.001):
+    '''
+    Power Iteration is a method for approximating the dominant Eigenvalues and Eigenvectors of a matrix
+    http://mlwiki.org/index.php/Power_Iteration
+    :param A: 2d numpy array
+    :return: eigenvalue, eigenvector
+    '''
+
+    def _eigenvalue(M, v):
+        """ Computes eigen-value from given matrix A and unit vector eigenvector v """
+        Mv = M.dot(v)
+        return v.dot(Mv)
+
+    n, m = A.shape
+
+    vec = np.ones(n)
+    vec /= np.linalg.norm(vec)
+    val = _eigenvalue(A, vec)
+
+    iter = 0
+    while iter < max_iter:
+        Avec = A.dot(vec)
+        new_vec = Avec / np.linalg.norm(Avec)
+        new_val = _eigenvalue(A, vec)
+
+        if np.abs(new_val - val) < thres:
+            break
+
+        val, vec = new_val, new_vec
+        iter += 1
+
+    return new_val, new_vec
+
+
+
+def eigen_decomp_DivideConquer(M):
+    pass
+
+
+
+def eigen_decomp_QR(M):
+    '''
+    https://en.wikipedia.org/wiki/Eigenvalue_algorithm
+    https://en.wikipedia.org/wiki/List_of_numerical_analysis_topics#Eigenvalue_algorithms
+    :param M:
+    :return:
+    '''
+
+
+
+
+    return
+
+
+def inv_by_lu_decomp(M):
+    '''
+
+    :param M:
+    :return:
+    '''
+    pass
+
+
+def inv_by_svd(M):
+    '''
+
+    :param M:
+    :return:
+    '''
+    pass
+
+def inv_by_gaus(M):
     '''
     Compute the inverse of a matrix
 
     - Inverse of permutation matrix is itself
     - A singular matrix is a square matrix that does not have a matrix inverse.
+    - If any
 
     Implement 3 methods:  https://www.zhihu.com/question/19584577/answer/359381546
-    1. Gaussian Elimination method
-    2. LU decomposition method  (use parallel computation!!)
+    1. Gaussian Elimination method: https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/matrix-inverse
+    2. todo: LU decomposition method (#todo: use parallel computation!!)
     3. svd method
 
     :param m: 2d numpy array of dimension n by n
@@ -191,8 +303,51 @@ def inv(M):
         print('Input matrix is singular and has no inverse! ')
         return False
 
+    n = len(M)
+    # append an identity matrix to M such that new dimensions are n by 2n
+    id = [[float(i == j) for j in range(n)] for i in range(n)]
+    for i in range(n):
+        M[i] += id[i]
 
-    # 1. Gaussian Elimination method
+    # forward part
+    for j in range(n):
+
+        # exchange rows when diagonal element is 0
+        if M[j][j] == 0:
+            if j == n-1:
+                print('Singular matrix does not have inverse! ')
+                return False
+            row_to_swap, max_abs = j, 0
+            for i in range(j+1, n):
+                if M[i][j] > max_abs:
+                    row_to_swap, max_abs = i, abs(M[i][j])
+
+            if row_to_swap == j:
+                print('Singular matrix does not have inverse! ')
+                return False
+
+            M[j], M[row_to_swap] = M[row_to_swap], M[j]
+
+        pivot = M[j][j]
+        for i in range(j, 2*n): # scale row such that the diagonal element is 1.0
+            M[j][i] /= pivot
+        for i in range(j+1, n): # update rows below the j-th row
+            x = M[i][j] # the multiplier that make pivot row ready for subtraction
+            for k in range(j, 2*n):
+                M[i][k] -= x * M[j][k]
+
+    # backward part
+    for j in range(n):
+        for i in range(0, j):
+            x = M[i][j]
+            # do elimination for the i-th row such that its j-th element is 0
+            for k in range(j, 2*n):
+                M[i][k] -= M[j][k] * x
+
+    # return the second half columns from the n by 2*n matrix M
+    return [row[n:] for row in M]
+
+
 
 
 
