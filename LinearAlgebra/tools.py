@@ -104,14 +104,40 @@ def pivotize(M):
 
 
 
-def QR_decomposition(M):
+def QR_decomposition(A):
     '''
     https://en.wikipedia.org/wiki/QR_decomposition
-    :param M:
-    :return:
+    https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf
+    :param M: 2d numpy array
+    :return: Q: 2d numpy array; R: 2d numpy array
+    '''
+    pass
+
+
+
+
+def QR_decomposition_GramSchmidt(A):
+    '''
+    https://en.wikipedia.org/wiki/QR_decomposition
+    https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf
+    :param M: 2d numpy array
+    :return: Q: 2d numpy array; R: 2d numpy array
     '''
 
-    pass
+    # Gram-Schmidt process：
+    n_rows, n_cols = A.shape
+    Q = np.empty([n_rows, n_cols])
+    for i, a in enumerate(A.T):
+        u = np.copy(a)
+        for k in range(i):
+            u -= np.dot(a.dot(Q[:, k]), Q[:, k])
+        Q[:, i] = u / np.linalg.norm(u)
+
+    # Q is orthogonal, so Q.T * Q = I  ---->  Q.T = Q.inverse
+    # Therefore:  A = Q*R   --->    Q.T * A = Q.T * Q * R  ---->  Q.T * A = I*R ;  so R = Q.T * A
+    R = np.dot(Q.T, A)
+    return Q, R
+
 
 
 def LUdecomposition(M):
@@ -250,16 +276,14 @@ def eigen_decomp_DivideConquer(M):
 
 
 
-def eigen_decomp_QR(M):
+def eigen_decomp_QR(A):
     '''
+
     https://en.wikipedia.org/wiki/Eigenvalue_algorithm
     https://en.wikipedia.org/wiki/List_of_numerical_analysis_topics#Eigenvalue_algorithms
-    :param M:
+    :param A: 2d numpy array
     :return:
     '''
-
-
-
 
     return
 

@@ -4,6 +4,11 @@ import numpy as np
 
 if __name__ == '__main__':
 
+    x = np.asarray([3,6,2,4,7])
+    y = np.asarray([1,2,2,3,3])
+
+    print(np.dot(x.dot(y), y))
+    exit()
 
 
     x = np.asarray([3,6,2,4,7])
