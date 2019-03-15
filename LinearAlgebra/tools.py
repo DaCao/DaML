@@ -3,14 +3,67 @@ from functools import reduce
 
 
 
+'''
 
-def diag(M):
-    '''
-    Return the diagonal of n by n matrix as a list
-    :param M: n by n 2d list/array
-    :return: 1d array of length n
-    '''
-    return [M[i][i] for i in range(len(M))]
+- Matrix Decomposition
+    - LU: Doolittle
+    - QR: Gram-Schmidt, Householder
+    
+    
+- Matrix determinant
+    - LU
+    
+    
+- Matrix Inverse
+    - Gaussian
+        - LU
+        - QR
+        
+- Eigenvalue
+    - QR
+
+- SVD
+
+
+
+
+'''
+
+
+class Matrix(object):
+
+    def __init__(self, M):
+        self.M = M
+
+
+
+    def diag(self, M):
+        '''
+        Return the diagonal of n by n matrix as a list
+        :param M: n by n 2d list/array
+        :return: 1d array of length n
+        '''
+        return [M[i][i] for i in range(len(M))]
+
+
+    def is_identity(M):
+        """
+        Return True if M is identitu matrix
+        :param M:
+        :return: Boolean
+        """
+        # must be square matrix
+        if len(M)!=len(M[0]):
+            return False
+
+        # diagonal must all be 1
+        for i in range(len(M)):
+            if float(M[i][i]) != 0.0:
+                return False
+
+        # other positions must all be 0
+        return set([float(sum(row)) for row in M]) == set([1.0])
+
 
 
 
@@ -21,26 +74,6 @@ def transpose(m):
     '''
     m_transpose = [[x for x in row] for row in list(zip(*m))]
     return m_transpose
-
-
-def is_identity(M):
-    """
-    Return True if M is identitu matrix
-    :param M:
-    :return: Boolean
-    """
-    # must be square matrix
-    if len(M)!=len(M[0]):
-        return False
-
-    # diagonal must all be 1
-    for i in range(len(M)):
-        if float(M[i][i]) != 0.0:
-            return False
-
-    # other positions must all be 0
-    return set([float(sum(row)) for row in M]) == set([1.0])
-
 
 
 def is_singular(M):
@@ -104,7 +137,16 @@ def pivotize(M):
 
 
 
-def QR_decomposition(A):
+def QR_Householder(A):
+    '''
+    https://en.wikipedia.org/wiki/QR_decomposition
+    https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf
+    :param M: 2d numpy array
+    :return: Q: 2d numpy array; R: 2d numpy array
+    '''
+    pass
+
+def QR_Householder(A):
     '''
     https://en.wikipedia.org/wiki/QR_decomposition
     https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf
@@ -116,10 +158,13 @@ def QR_decomposition(A):
 
 
 
-def QR_decomposition_GramSchmidt(A):
+def QR_GramSchmidt(A):
     '''
     https://en.wikipedia.org/wiki/QR_decomposition
     https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf
+
+    Time complexity:  O(n^2) times bigO of numpy.dot()
+
     :param M: 2d numpy array
     :return: Q: 2d numpy array; R: 2d numpy array
     '''
@@ -136,6 +181,7 @@ def QR_decomposition_GramSchmidt(A):
     # Q is orthogonal, so Q.T * Q = I  ---->  Q.T = Q.inverse
     # Therefore:  A = Q*R   --->    Q.T * A = Q.T * Q * R  ---->  Q.T * A = I*R ;  so R = Q.T * A
     R = np.dot(Q.T, A)
+
     return Q, R
 
 
@@ -145,10 +191,14 @@ def LUdecomposition(M):
     Computes the Lower-Upper decomposition of matrix M
     Apply Doolittle algorithm: https://www.geeksforgeeks.org/doolittle-algorithm-lu-decomposition/
     http://mathonline.wikidot.com/the-algorithm-for-doolittle-s-method-for-lu-decompositions
+
     Doolittle’s method provides an alternative way to factor A into an LU decomposition without going through
     the hassle of Gaussian Elimination.
-    :param m:
-    :return:
+
+    Time complexity: n^3
+
+    :param M: matrix
+    :return: tuple of 3 matrices
     '''
     n = len(M)
     L = [[0.0]*n for i in range(n)]
@@ -207,6 +257,10 @@ def determinant(M):
 def svd(M):
     '''
     Singular Value Decomposition
+    http://www.minerazzi.com/tutorials/singular-value-decomposition-fast-track-tutorial.pdf
+    https://fenix.tecnico.ulisboa.pt/downloadFile/3779576344458/singular-value-decomposition-fast-track-tutorial.pdf
+    http://www.cs.utexas.edu/users/inderjit/public_papers/HLA_SVD.pdf
+    https://web.stanford.edu/class/cme335/lecture6.pdf
     :param M:
     :return:
     '''
@@ -272,20 +326,43 @@ def power_iter(A, max_iter = 1000, thres=0.001):
 
 
 def eigen_decomp_DivideConquer(M):
+    '''
+    https://en.wikipedia.org/wiki/Eigenvalue_algorithm
+    https://en.wikipedia.org/wiki/List_of_numerical_analysis_topics#Eigenvalue_algorithms
+    :param M:
+    :return:
+    '''
     pass
+
+
 
 
 
 def eigen_decomp_QR(A):
     '''
+    http://pi.math.cornell.edu/~web6140/TopTenAlgorithms/QRalgorithm.html
 
-    https://en.wikipedia.org/wiki/Eigenvalue_algorithm
-    https://en.wikipedia.org/wiki/List_of_numerical_analysis_topics#Eigenvalue_algorithms
+    Since the eigenvalues of an upper-triangular matrix lie on its diagonal, the iteration above will allow us
+    to read off the eigenvalues of A from the diagonal entries of A_k
+ .
+    Basic QR algorithm:
+        - with orthogonal iteration instead of original iteration to ensure convergence (otherwise useless)
+        - with reduction to a similar upper Hessenberg matrix to make computation cheaper
+        - with Wilkinson Shift to make convergence faster
+
     :param A: 2d numpy array
     :return:
     '''
 
+    A_k = A
+    while True:
+        Q, R = QR_GramSchmidt(A_k)
+        A_k = R.dot(Q)
+        break
+
     return
+
+
 
 
 def inv_by_lu_decomp(M):
@@ -305,19 +382,20 @@ def inv_by_svd(M):
     '''
     pass
 
+
+
 def inv_by_gaus(M):
     '''
-    Compute the inverse of a matrix
+    Compute the inverse of a matrix by gaussian elimination:  O(n^3)
 
     - Inverse of permutation matrix is itself
     - A singular matrix is a square matrix that does not have a matrix inverse.
-    - If any
 
     Implement 3 methods:  https://www.zhihu.com/question/19584577/answer/359381546
     1. Gaussian Elimination method: https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/matrix-inverse
     2. todo: LU decomposition method (#todo: use parallel computation!!)
     3. svd method
-
+    4. QR decomposition
     :param m: 2d numpy array of dimension n by n
     :return: inverse of m
     '''
@@ -374,7 +452,14 @@ def inv_by_gaus(M):
 
 
 
+def timer(func, arg):
+    '''
 
+    :param func:
+    :param arg:
+    :return:
+    '''
+    return
 
 
 if __name__ == '__main__':
