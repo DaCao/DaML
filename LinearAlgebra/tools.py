@@ -6,21 +6,22 @@ from functools import reduce
 '''
 
 - Matrix Decomposition
-    - LU: Doolittle
-    - QR: Gram-Schmidt, Householder
+    - LU: Doolittle algorithm
+    - QR: Gram-Schmidt; Householder
     
     
 - Matrix determinant
-    - LU
+    - LU and then easy calculations
     
     
 - Matrix Inverse
     - Gaussian
-        - LU
-        - QR
+    - LU and then Gaussian 
+    - QR and then Gaussian
         
 - Eigenvalue
-    - QR
+    - QR algo:  http://pi.math.cornell.edu/~web6140/TopTenAlgorithms/QRalgorithm.html
+    - divide and conquer ? 
 
 - SVD
 
@@ -148,8 +149,8 @@ def QR_Householder(A):
 
 def QR_Householder(A):
     '''
-    https://en.wikipedia.org/wiki/QR_decomposition
-    https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf
+    https://github.com/danbar/qr_decomposition/blob/master/qr_decomposition/qr_decomposition.py
+
     :param M: 2d numpy array
     :return: Q: 2d numpy array; R: 2d numpy array
     '''
@@ -266,10 +267,6 @@ def svd(M):
     '''
 
 
-
-
-
-
     return
 
 
@@ -283,8 +280,6 @@ def Rayleigh_quotient(A, v):
     '''
 
     pass
-
-
 
 
 
