@@ -45,8 +45,12 @@ if __name__ == "__main__":
     res = logsumexp(x,1)
     print(res)
     print('\n-------------\n')
-    print(np.atleast_2d(res))
 
+
+    print(np.atleast_2d(res))
+    print(np.atleast_2d(res).T)
+
+    x - np.atleast_2d(res).T
 
 
     exit()

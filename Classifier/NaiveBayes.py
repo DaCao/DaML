@@ -14,7 +14,6 @@ class BaseNB(object):
 
     def __init__(self, X, Y, smoothing=0.001):
 
-
         if len(X) != len(Y):
             print('input dimensions mismatch!') #todo: error handling??
             return False
@@ -47,7 +46,6 @@ class BaseNB(object):
         pass
 
 
-
     def predict(self, X):
         """
         Make classification on an array of test vectors
@@ -56,7 +54,6 @@ class BaseNB(object):
         """
         jll = self._joint_log_likelihood(X)
         return self.classes_[np.argmax(jll, axis=1)]
-
 
 
     def predict_log_prob(self, X):
@@ -71,33 +68,35 @@ class BaseNB(object):
         :return: array-like, shape = [n_samples, n_classes]
         """
 
-        jll = self._joint_log_likelihood(X)
-        log_prob_x = logsumexp(jll, axis=1)
+        jll = self._joint_log_likelihood(X)  # log( (P(x|c) * P(c)) )
+        log_prob_x = logsumexp(jll, axis=1)  # log(x)
+
         # now normalize jll by log_prob_x:  log((P(x|c) * P(c))/P(x)) = log((P(x|c) * P(c))) - log(x)
-        normalized_jll = jll -
+        normalized_jll = jll - np.atleast_2d(log_prob_x).T   # log( P(c|x) )
+
+        return normalized_jll
 
 
-
-
-
-
-        return
-
-
-    def _prob(self, val, arr):
+    def predict_prob(self, X):
         """
-        Computes the probability of val in the arr
-        :param value: float
-        :param array: a list/array of floats
-        :return: probability of val
+        Compute the posterior probability for test vector
+
+        :param X:  array-like, shape = [n_samples, n_features]
+        :return: array-like, shape = [n_samples, n_classes]
         """
-        p = sum([float(i == val) for i in arr])/float(len(arr))
-        if p == 0:
-            p = self.smoothing
-        return p
+        return np.exp(self.predict_log_prob(X))
 
 
 
+class GaussianNB(BaseNB):
+    """
+    Gaussian Naive Bayes
+    Can perform online updates to model parameters via `partial_fit` method.
+    """
+
+    def __init__(self, priors=None, smoothing = 1e-9):
+        self.priors = priors
+        self.smoothing = smoothing
 
 
     def
