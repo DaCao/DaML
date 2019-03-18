@@ -3,6 +3,39 @@ import numpy as np
 
 
 
+def _check_partial_fit_first_call(clf, classes=None):
+    """
+    This function returns True if it detects that this was the first call to
+    ``partial_fit`` on ``clf``. In that case the ``classes_`` attribute is also
+    set on ``clf``.
+    """
+
+    if getattr(clf, "classes_", None) is None and classes is None:
+        raise ValueError("classes must be passed on the first call to _partial_fit. ")
+
+    elif classes is not None:
+
+        if getattr(clf, "classes_", None) is None:
+            # this is the first call to partial_fit
+            clf.classes_ = classes
+            return True
+
+        else:
+            if not np.array_equal(clf.classes_, classes):
+                raise ValueError(
+                    "`classes=%r` is not the same as on last call "
+                    "to partial_fit, was: %r" % (classes, clf.classes_))
+
+    else:
+        # classes is None but clf.classes) has been set so nothing to do
+        pass
+
+    return False
+
+
+
+
+
 
 def logsumexp(X, axis):
     """
