@@ -250,8 +250,50 @@ class GaussianNB(BaseNB):
         return self
 
 
+    def _joint_log_likelihood(self, X):
+        """
+
+        :param X:
+        :return:
+        """
+
+        joint_log_likelihood = []
+
+        for i in range(np.size(self.classes_)):
+            log_prior = np.log(self.classes_)
+            log_likelihood = -0.5 * np.sum(np.log(2 * np.pi * self.sigma_[i,:]))
+            log_likelihood -= 0.5 * np.sum( (X - self.theta_[i, :]) ** 2 / self.sigma_[i, :], 1)
+
+            joint_log_likelihood.append((log_prior + log_likelihood))
+
+        return np.array(joint_log_likelihood).T
 
 
+
+
+
+
+class BaseDiscreteNB(BaseNB):
+    """
+    For discrete / categorical data
+    """
+
+    def _update_class_log_prior(self, class_prior=None):
+        n_classes = len(self.classes_)
+
+        if class_prior is not None:
+            if n_classes != len(class_prior):
+                raise ValueError("Number of priors doesn't match number of classes! ")
+            self.class_log_prior = np.log(class_prior)
+
+        elif self.fit_prior:
+            self.class_log_prior_ = np.log(self.class_count_) - np.log(self.class_count_.sum())
+
+        else:
+            self.class_log_prior_ = np.full(n_classes, -np.log(n_classes))
+
+
+    def 
 
 
 

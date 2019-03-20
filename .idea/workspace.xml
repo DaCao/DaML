@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4fb488a7-e5ff-4ffe-9f83-1b5b8eff8ac3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/Classifier/NaiveBayes.py" beforeDir="false" afterPath="$PROJECT_DIR$/Classifier/NaiveBayes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LinearAlgebra/draft.py" beforeDir="false" afterPath="$PROJECT_DIR$/LinearAlgebra/draft.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,22 +23,22 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="11" />
+          <entry key="py" value="12" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="11" />
+          <entry key="Python" value="12" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="13779" />
+          <entry key="py" value="14624" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="13779" />
+          <entry key="Python" value="14624" />
         </counts>
       </usages-collector>
     </session>
@@ -62,14 +62,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Classifier/NaiveBayes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="386">
-              <caret line="153" column="33" selection-start-line="153" selection-start-column="33" selection-end-line="153" selection-end-column="33" />
+            <state relative-caret-position="491">
+              <caret line="295" column="8" selection-start-line="295" selection-start-column="8" selection-end-line="295" selection-end-column="8" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <marker date="1552890116753" expanded="true" signature="263:264" ph="..." />
-                <marker date="1552890116753" expanded="true" signature="475:709" ph="..." />
-                <marker date="1552890116753" expanded="true" signature="4957:5130" ph="..." />
-                <marker date="1552890116753" expanded="true" signature="5886:8601" ph="..." />
+                <marker date="1553053851999" expanded="true" signature="263:264" ph="..." />
+                <marker date="1553053851999" expanded="true" signature="475:709" ph="..." />
+                <marker date="1553053851999" expanded="true" signature="4957:5712" ph="..." />
+                <marker date="1553053851999" expanded="true" signature="10337:10346" ph="..." />
               </folding>
             </state>
           </provider>
@@ -78,12 +78,21 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/tools.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="401">
-              <caret line="31" selection-start-line="31" selection-end-line="31" />
+            <state relative-caret-position="-116">
+              <caret line="65" lean-forward="true" selection-start-line="65" selection-end-line="65" />
               <folding>
                 <marker date="1552866889008" expanded="true" signature="982:988" ph="..." />
                 <marker date="1552866889008" expanded="true" signature="1011:2519" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/LinearAlgebra/draft.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -162,6 +171,8 @@
       <find>self.class_count_</find>
       <find>_update_mean_variance</find>
       <find>self.epsilon_</find>
+      <find>self.sigma_</find>
+      <find>self.classes_</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -170,13 +181,13 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/LinearAlgebra/draft.py" />
         <option value="$PROJECT_DIR$/tests/unit/LinearAlgebra/test_tools.py" />
         <option value="$PROJECT_DIR$/LinearAlgebra/test.py" />
         <option value="$PROJECT_DIR$/LinearAlgebra/matrix.py" />
         <option value="$PROJECT_DIR$/LinearAlgebra/tools.py" />
         <option value="$PROJECT_DIR$/utils/timer.py" />
         <option value="$PROJECT_DIR$/utils/tools.py" />
+        <option value="$PROJECT_DIR$/LinearAlgebra/draft.py" />
         <option value="$PROJECT_DIR$/Classifier/NaiveBayes.py" />
       </list>
     </option>
@@ -202,6 +213,16 @@
             <path>
               <item name="DaML" type="b2602c69:ProjectViewProjectNode" />
               <item name="DaML" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DaML" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DaML" type="462c0819:PsiDirectoryNode" />
+              <item name="LinearAlgebra" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DaML" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DaML" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="DaML" type="b2602c69:ProjectViewProjectNode" />
@@ -241,7 +262,28 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.tools (1)">
+  <component name="RunManager" selected="Python.draft">
+    <configuration name="draft" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="DaML" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/LinearAlgebra" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/LinearAlgebra/draft.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="DaML" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -309,9 +351,11 @@
       <item itemvalue="Python.test" />
       <item itemvalue="Python.tools" />
       <item itemvalue="Python.tools (1)" />
+      <item itemvalue="Python.draft" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.draft" />
         <item itemvalue="Python.tools (1)" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.tools" />
@@ -349,7 +393,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32907802" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.24539007" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.14893617" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -376,9 +420,6 @@
           <caret line="9" column="30" selection-start-line="9" selection-start-column="30" selection-end-line="9" selection-end-column="30" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/LinearAlgebra/draft.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/unit/LinearAlgebra/test_tools.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -416,10 +457,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/LinearAlgebra/draft.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/utils/tools.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="401">
-          <caret line="31" selection-start-line="31" selection-end-line="31" />
+        <state relative-caret-position="-116">
+          <caret line="65" lean-forward="true" selection-start-line="65" selection-end-line="65" />
           <folding>
             <marker date="1552866889008" expanded="true" signature="982:988" ph="..." />
             <marker date="1552866889008" expanded="true" signature="1011:2519" ph="..." />
@@ -429,14 +477,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Classifier/NaiveBayes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="386">
-          <caret line="153" column="33" selection-start-line="153" selection-start-column="33" selection-end-line="153" selection-end-column="33" />
+        <state relative-caret-position="491">
+          <caret line="295" column="8" selection-start-line="295" selection-start-column="8" selection-end-line="295" selection-end-column="8" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <marker date="1552890116753" expanded="true" signature="263:264" ph="..." />
-            <marker date="1552890116753" expanded="true" signature="475:709" ph="..." />
-            <marker date="1552890116753" expanded="true" signature="4957:5130" ph="..." />
-            <marker date="1552890116753" expanded="true" signature="5886:8601" ph="..." />
+            <marker date="1553053851999" expanded="true" signature="263:264" ph="..." />
+            <marker date="1553053851999" expanded="true" signature="475:709" ph="..." />
+            <marker date="1553053851999" expanded="true" signature="4957:5712" ph="..." />
+            <marker date="1553053851999" expanded="true" signature="10337:10346" ph="..." />
           </folding>
         </state>
       </provider>
