@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
+from scipy.sparse import issparse
 from collections import defaultdict
-from utils.tools import logsumexp, _check_partial_fit_first_call
+from utils.tools import logsumexp, _check_partial_fit_first_call, label_binarize, _num_samples
+from .utils.extmath import safe_sparse_dot
+import warnings
 
 # https://github.com/Arctanxy/learning_notes/blob/master/study/machine_learning/Bayes/NavieBayes.py
 
@@ -269,9 +272,7 @@ class GaussianNB(BaseNB):
         return np.array(joint_log_likelihood).T
 
 
-
-
-
+_ALPHA_MIN = 1e-10
 
 class BaseDiscreteNB(BaseNB):
     """
@@ -292,8 +293,163 @@ class BaseDiscreteNB(BaseNB):
         else:
             self.class_log_prior_ = np.full(n_classes, -np.log(n_classes))
 
+    def _check_alpha(self):
+        if np.min(self.alpha) < 0:
+            raise ValueError('Smoothing parameter alpha = %.1e. '
+                             'alpha should be > 0.' % np.min(self.alpha))
+        if isinstance(self.alpha, np.ndarray):
+            if not self.alpha.shape[0] == self.feature_count_.shape[1]:
+                raise ValueError("alpha should be a scalar or a numpy array "
+                                 "with shape [n_features]")
+        if np.min(self.alpha) < _ALPHA_MIN:
+            warnings.warn('alpha too small will result in numeric errors, '
+                          'setting alpha = %.1e' % _ALPHA_MIN)
+            return np.maximum(self.alpha, _ALPHA_MIN)
+        return self.alpha
 
-    def 
+
+    def partial_fit(self, X, y, classes=None, sample_weight=None):
+        """
+        Incremental fit on a batch of samples.
+
+        :param X: array-like, sparse matrix, shape = [n_samples, n_features]
+        :param y: array-like, shape = [n_samples]
+        :param classes:  array-like, shape = [n_classes] (default=None)
+        :param sample_weight:  array-like, shape = [n_samples] (default=None)
+        :return:
+        """
+
+        n_samples, n_features = X.shape
+
+        if _check_partial_fit_first_call(self, classes):
+            # first call, so initialize a bunch of stuff
+            n_effective_classes = len(classes) if len(classes) > 1 else 2
+            self.class_count_ = np.zeros(n_effective_classes, dtype=np.float64)
+            self.feature_count_ = np.zeros((n_effective_classes, n_features), dtype=np.float64)
+
+        elif n_features != self.coef_.shape[1]:
+            msg = "Number features %d does not match previous data %d"
+            raise ValueError(msg%(n_features, self.coef_.shape[1]))
+
+
+        Y = label_binarize(y, classes=self.class_count_)  #todo:
+        if Y.shape[1] == 1:
+            Y = np.concatenate((1 - Y, Y), axis=1)
+
+        n_samples, n_classes = Y.shape
+
+        if X.shape[0] != Y.shape[0]:
+            msg = "X.shape[0]=%d and y.shape[0]=%d are incompatible."
+            raise ValueError(msg % (X.shape[0], y.shape[0]))
+
+
+        Y = Y.astype(np.float64)
+        if sample_weight is not None:
+            sample_weight = np.atleast_2d(sample_weight)
+            Y *= sample_weight.T
+
+        class_prior = self.class_prior
+
+        self._count(X, Y) # todo: learn from each individual implementation
+
+        alpha = self._check_alpha()
+        self._update_feature_log_prob(alpha)
+        self._update_class_log_prior(class_prior=class_prior)
+        return self
+
+
+    def fit(self, X, y, sample_weight=None):
+        """
+        Fit the Naive Bayes classifier ccording to X, y
+        :param X: array-like, sparse matrix, shape = [n_samples, n_features]
+        :param y: array-like, shape = [n_samples]
+        :param sample_weight: array-like, shape = [n_samples], (default=None)
+        :return: self, object
+        """
+
+        n_samples, n_features = X.shape
+
+        labelbin = LabelBinarizer()
+        Y = labelbin.fit_transform(y)
+        self.classes_ = labelbin.classes_
+        if Y.shape[1] == 1:
+            Y = np.concatenate((1 - Y, Y), axis=1)
+
+        Y = Y.astype(np.float64)
+        if sample_weight is not None:
+            sample_weight = np.atleast_2d(sample_weight)
+            Y *= sample_weight.T
+
+        class_prior = self.class_prior
+
+
+        # count raw events from data
+        n_effective_classes = Y.shape[1]
+        self.class_count_ = np.zeros(n_effective_classes, dtype=np.float64)
+        self.feature_count_ = np.zeros((n_effective_classes, n_features), dtype=np.float64)
+
+        self._count(X,Y)
+        alpha = self._check_alpha()
+        self._update_feature_log_prob(alpha)
+        self._update_class_log_prior(class_prior=class_prior)
+
+        return self
+
+
+    def _get_coef(self):
+        return (self.feature_log_prob_[1:] if len(self.classes_) == 2 else self.feature_log_prob_)
+
+    def _get_intercept(self):
+        return (self.class_log_prior_[1:] if len(self.classes_) == 2 else self.class_log_prior_)
+
+    coef_ = property(_get_coef)
+    intercept_ = property(_get_intercept)
+
+
+
+class MultinomialNB(BaseDiscreteNB):
+    """
+    Naive Bayes classifier for multinomial models
+
+    The multinomial Naive Bayes classifier is suitable for classification with
+    discrete features (e.g., word counts for text classification). The
+    multinomial distribution normally requires integer feature counts. However,
+    in practice, fractional counts such as tf-idf may also work.
+
+    """
+
+    def __init__(self, alpha=1.0, fit_prior=True, class_prior=None):
+        self.alpha = alpha
+        self.fit_prior = fit_prior
+        self.class_prior = class_prior
+
+    def _count(self, X, Y):
+        """
+        Count and smooth feature occurrences.
+        :param X:
+        :param Y:
+        :return:
+        """
+
+        if np.any((X.data if issparse(X) else X) < 0):
+            raise ValueError("Input X must be non-negative")
+
+        self.feature_count_ += safe_sparse_dot(Y.T, X)
+        self.class_count_ += Y.sum(axis=0)
+
+
+    def _update_feature_log_prob(self, alpha):
+        """
+        Applying smoothing to raw counts and recompute log probabilities.
+        :param alpha:
+        :return:
+        """
+        smoothed_fc =
+
+
+
+
+
 
 
 

@@ -1,4 +1,68 @@
 import numpy as np
+import numbers
+
+
+
+
+def _num_samples(x):
+    """Return number of samples in array-like x."""
+    if hasattr(x, 'fit') and callable(x.fit):
+        # Don't get num_samples from an ensembles length!
+        raise TypeError('Expected sequence or array-like, got '
+                        'estimator %s' % x)
+    if not hasattr(x, '__len__') and not hasattr(x, 'shape'):
+        if hasattr(x, '__array__'):
+            x = np.asarray(x)
+        else:
+            raise TypeError("Expected sequence or array-like, got %s" %
+                            type(x))
+    if hasattr(x, 'shape'):
+        if len(x.shape) == 0:
+            raise TypeError("Singleton array %r cannot be considered"
+                            " a valid collection." % x)
+        # Check that shape is returning an integer or default to len
+        # Dask dataframes may not return numeric shape[0] value
+        if isinstance(x.shape[0], numbers.Integral):
+            return x.shape[0]
+        else:
+            return len(x)
+    else:
+        return len(x)
+
+
+def label_binarize(y, classes, neg_label=0, pos_label=1, sparse_output=False):
+    """
+    Binarize labels in one-vs-all fashion.
+    Used to extend binary classification methods into multi-class classification methods.
+
+    :param y:
+    :param classes:
+    :param neg_label:
+    :param pos_label:
+    :param sparse_output:
+    :return:
+    """
+    if not isinstance(y, list):
+        # XXX Workaround that will be removed when list of list format is
+        # dropped
+        raise ValueError("y must be list.")
+    else:
+        if _num_samples(y) == 0:
+            raise ValueError('y has 0 samples: %r' % y)
+    if neg_label >= pos_label:
+        raise ValueError("neg_label={0} must be strictly less than "
+                         "pos_label={1}.".format(neg_label, pos_label))
+
+    if (sparse_output and (pos_label == 0 or neg_label != 0)):
+        raise ValueError("Sparse binarization is only supported with non "
+                         "zero pos_label and zero neg_label, got "
+                         "pos_label={0} and neg_label={1}"
+                         "".format(pos_label, neg_label))
+
+
+
+    return y
+
 
 
 
