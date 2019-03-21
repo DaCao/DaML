@@ -444,7 +444,18 @@ class MultinomialNB(BaseDiscreteNB):
         :param alpha:
         :return:
         """
-        smoothed_fc =
+        smoothed_fc = self.feature_count_ + alpha
+        smoothed_cc = smoothed_fc.sum(axis=1)
+
+        self.feature_log_prob_ = (np.log(smoothed_fc)) - np.log(smoothed_cc.reshape(-1,1))
+
+
+    def _joint_log_likelihood(self, X):
+        """ Computes posterior log probability of the samples X """
+        return ( safe_sparse_dot(X, self.feature_log_prob_.T) + self.class_log_prior_ )
+
+    
+
 
 
 
