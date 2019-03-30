@@ -1,9 +1,10 @@
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import binarize, LabelBinarizer
+from sklearn.utils.extmath import safe_sparse_dot
 from scipy.sparse import issparse
 from collections import defaultdict
 from utils.tools import logsumexp, _check_partial_fit_first_call, label_binarize, _num_samples
-from .utils.extmath import safe_sparse_dot
 import warnings
 
 # https://github.com/Arctanxy/learning_notes/blob/master/study/machine_learning/Bayes/NavieBayes.py
@@ -274,6 +275,10 @@ class GaussianNB(BaseNB):
 
 _ALPHA_MIN = 1e-10
 
+# todo: gaussian NB model is updated by computing new mean and sigma, given new batch of labelled data;
+# todo: how is it done in Multinomial NB ???
+
+
 class BaseDiscreteNB(BaseNB):
     """
     For discrete / categorical data
@@ -434,7 +439,8 @@ class MultinomialNB(BaseDiscreteNB):
         if np.any((X.data if issparse(X) else X) < 0):
             raise ValueError("Input X must be non-negative")
 
-        self.feature_count_ += safe_sparse_dot(Y.T, X)
+        self.feature_count_ += safe_sparse_dot(Y.T, X) # n_classes by n_features,
+                                                       # self.feature_count_[i][j] = count of feature j in class i
         self.class_count_ += Y.sum(axis=0)
 
 
@@ -444,8 +450,8 @@ class MultinomialNB(BaseDiscreteNB):
         :param alpha:
         :return:
         """
-        smoothed_fc = self.feature_count_ + alpha
-        smoothed_cc = smoothed_fc.sum(axis=1)
+        smoothed_fc = self.feature_count_ + alpha  # feature count
+        smoothed_cc = smoothed_fc.sum(axis=1)      # cumulative count
 
         self.feature_log_prob_ = (np.log(smoothed_fc)) - np.log(smoothed_cc.reshape(-1,1))
 
@@ -454,7 +460,99 @@ class MultinomialNB(BaseDiscreteNB):
         """ Computes posterior log probability of the samples X """
         return ( safe_sparse_dot(X, self.feature_log_prob_.T) + self.class_log_prior_ )
 
-    
+
+
+class ComplementNB(BaseDiscreteNB):
+    """
+    Complement Naive Bayes; designed to correct "severe assumptions" made by multinomial Naive Bayes.
+    It is good gor imbalanced data sets
+
+    parameters
+    ----------
+    alpha: float, additive smoothing parameter (0 for no smoothing)
+
+    fit_prior: boolean, optional
+            Only used in edge case with a single class in the training set
+
+    ...
+
+    """
+
+    def __init__(self, alpha=1.0, fit_prior=True, class_prior= None, norm=False):
+        self.alpha = alpha
+        self.fit_prior = fit_prior
+        self.class_prior = class_prior
+        self.norm = norm
+
+
+    def _count(self, X, Y):
+        """ Count feature Occurrences """
+
+        self.feature_count_ += safe_sparse_dot(Y.T, X) # n_classes by n_features,
+                                                       # self.feature_count_[i][j] = count of feature j in class i
+
+        self.class_count_ += Y.sum(axis=0)
+        self.feature_all_ = self.feature_count_.sum(axis=0)
+
+
+    def _update_feature_log_prob(self, alpha):
+        """ Apply smoothing to raw counts and compute the weights """
+
+        comp_count = self.feature_all_ + alpha - self.feature_count_
+        logged = np.log(comp_count / comp_count.sum(axis=1, keepdims=True))
+
+        # todo: not really popular model?
+        pass
+
+    def _joint_log_likelihood(self, X):
+        pass
+
+
+
+class BernoulliNB(BaseDiscreteNB):
+    """
+    Naive Bayes classifier for multivariate Bernoulli models.
+
+    Like MultinomialNB, this classifier is suitable for discrete data.
+    MultinomialNB works with occurrence counts vs. BernoulliNB is designed for binary/boolean features.
+    """
+
+    def __init__(self, alpha= 0.1, binarize=.0, fit_prior=True, class_prior=None):
+        self.alpha = alpha
+        self.binarize = binarize
+        self.fit_prior = fit_prior
+        self.class_prior = class_prior
+
+    def _count(self, X, Y):
+        """ Count and smooth feature occurrences """
+
+        if self.binarize is not None:
+            X = binarize(X, threshold = self.binarize)
+
+        self.feature_count_ += safe_sparse_dot(Y.T, X)
+        self.class_count_ += Y.sum(axis=0)
+
+
+    def _update_feature_log_prob(self, alpha):
+        """Apply smoothing to raw counts and recompute log probabilities"""
+
+        smoothed_fc = self.feature_count_ + alpha
+        smoothed_cc = self.class_count_ + alpha * 2
+        self.feature_log_prob_ = ( np.log(smoothed_fc) - np.log(smoothed_cc.reshape(-1, 1)) )
+
+    def _joint_log_likelihood(self, X):
+
+        if self.binarize is not None:
+            X = binarize(X, threshold = self.binarize)
+
+        n_classes, n_features = self.feature_log_prob_.shape
+        n_samples, n_features_X = X.shape
+
+
+
+
+
+
 
 
 
