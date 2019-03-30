@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4fb488a7-e5ff-4ffe-9f83-1b5b8eff8ac3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/Classifier/NaiveBayes.py" beforeDir="false" afterPath="$PROJECT_DIR$/Classifier/NaiveBayes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LinearAlgebra/draft.py" beforeDir="false" afterPath="$PROJECT_DIR$/LinearAlgebra/draft.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/tools.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,11 +24,20 @@
                 </provider>
               </entry>
             </file>
-            <file pinned="false" current-in-tab="true">
+            <file pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/.venv/lib/python3.5/site-packages/sklearn/svm/base.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="3064">
-                    <caret line="901" column="7" lean-forward="true" selection-start-line="901" selection-start-column="7" selection-end-line="901" selection-end-column="7" />
+                  <state relative-caret-position="214">
+                    <caret line="711" column="17" lean-forward="true" selection-start-line="711" selection-start-column="17" selection-end-line="711" selection-end-column="17" />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/.venv/lib/python3.5/site-packages/sklearn/naive_bayes.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="383">
+                    <caret line="941" column="31" selection-start-line="941" selection-start-column="19" selection-end-line="941" selection-end-column="31" />
                   </state>
                 </provider>
               </entry>
@@ -52,22 +59,22 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="18" />
+          <entry key="py" value="19" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="18" />
+          <entry key="Python" value="19" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="18266" />
+          <entry key="py" value="18463" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="18266" />
+          <entry key="Python" value="18463" />
         </counts>
       </usages-collector>
     </session>
@@ -77,11 +84,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Classifier/NaiveBayes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="402" column="67" selection-start-line="402" selection-start-column="67" selection-end-line="402" selection-end-column="67" />
+            <state relative-caret-position="341">
+              <caret line="498" lean-forward="true" selection-start-line="498" selection-end-line="498" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <marker date="1553980505900" expanded="true" signature="17019:17036" ph="..." />
+                <marker date="1553981725042" expanded="true" signature="17803:17820" ph="..." />
               </folding>
             </state>
           </provider>
@@ -171,8 +178,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>return Q, R</find>
-      <find>svd</find>
       <find>QR</find>
       <find>https</find>
       <find>QR_decomposition_</find>
@@ -197,10 +202,12 @@
       <find>bina</find>
       <find>LabelBinarizer</find>
       <find>sample_weight</find>
-      <find>label_binarize</find>
-      <find>_update_feature_log_prob</find>
       <find>_count</find>
       <find>_joint_log_likelihood</find>
+      <find>label_binarize</find>
+      <find>n_classes, n_features = self.feature_log_prob_.shape</find>
+      <find>self.feature_count_ += safe_sparse_dot(Y.T, X)</find>
+      <find>_update_feature_log_prob</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -505,13 +512,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.venv/lib/python3.5/site-packages/sklearn/svm/base.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3064">
-          <caret line="901" column="7" lean-forward="true" selection-start-line="901" selection-start-column="7" selection-end-line="901" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils/tools.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-177">
@@ -545,13 +545,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.venv/lib/python3.5/site-packages/sklearn/svm/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="711" column="17" lean-forward="true" selection-start-line="711" selection-start-column="17" selection-end-line="711" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.venv/lib/python3.5/site-packages/sklearn/naive_bayes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="383">
+          <caret line="941" column="31" selection-start-line="941" selection-start-column="19" selection-end-line="941" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Classifier/NaiveBayes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="402" column="67" selection-start-line="402" selection-start-column="67" selection-end-line="402" selection-end-column="67" />
+        <state relative-caret-position="341">
+          <caret line="498" lean-forward="true" selection-start-line="498" selection-end-line="498" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <marker date="1553980505900" expanded="true" signature="17019:17036" ph="..." />
+            <marker date="1553981725042" expanded="true" signature="17803:17820" ph="..." />
           </folding>
         </state>
       </provider>

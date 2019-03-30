@@ -275,10 +275,6 @@ class GaussianNB(BaseNB):
 
 _ALPHA_MIN = 1e-8
 
-# todo: gaussian NB model is updated by computing new mean and sigma, given new batch of labelled data;
-# todo: how is it done in Multinomial NB ???
-
-
 
 class BaseDiscreteNB(BaseNB):
     """
@@ -316,7 +312,14 @@ class BaseDiscreteNB(BaseNB):
             self.class_count_ = np.zeros(n_effective_classes, dtype=np.float64)
             self.feature_count_ = np.zeros((n_effective_classes, n_features), dtype=np.float64)
 
+        # For example:
+        # >>> label_binarize([1, 6], classes=[1, 2, 4, 6])
+        # array([[1, 0, 0, 0],
+        #        [0, 0, 0, 1]])
         Y = label_binarize(y, classes=self.class_count_)  # one-hot encoding for each sample
+
+
+
         if Y.shape[1] == 1:
             Y = np.concatenate((1 - Y, Y), axis=1)
         Y = Y.astype(np.float64)
@@ -387,7 +390,7 @@ class MultinomialNB(BaseDiscreteNB):
     """
 
     def __init__(self, alpha=1.0, fit_prior=True, class_prior=None):
-        self.alpha = alpha
+        self.alpha = max(alpha, _ALPHA_MIN)
         self.fit_prior = fit_prior
         self.class_prior = class_prior
 
@@ -448,36 +451,57 @@ class BernoulliNB(BaseDiscreteNB):
     """
 
     def __init__(self, alpha= 0.1, binarize=.0, fit_prior=True, class_prior=None):
-        self.alpha = alpha
+        self.alpha = max(alpha, _ALPHA_MIN)
         self.binarize = binarize
         self.fit_prior = fit_prior
         self.class_prior = class_prior
 
+
     def _count(self, X, Y):
-        """ Count and smooth feature occurrences """
+        """
+        Count and smooth feature occurrences
+        """
 
         if self.binarize is not None:
             X = binarize(X, threshold = self.binarize)
 
-        self.feature_count_ += safe_sparse_dot(Y.T, X)
-        self.class_count_ += Y.sum(axis=0)
+        # Y is n_samples by n_classes. Each row represents a sample whose label is one-hot encoded
+        # self.feature_count_[i][j] = count of feature j in class i
+        self.feature_count_ += safe_sparse_dot(Y.T, X)  # n_classes by n_features
+        self.class_count_ += Y.sum(axis=0)              # 1 by n_classes
 
 
     def _update_feature_log_prob(self):
-        """Apply smoothing to raw counts and recompute log probabilities"""
+        """
+        Apply smoothing to raw counts and recompute log probabilities
 
-        smoothed_fc = self.feature_count_ + self.alpha
-        smoothed_cc = self.class_count_ + self.alpha * 2
+        """
+
+        smoothed_fc = self.feature_count_ + self.alpha     # n_classes by n_features
+        smoothed_cc = self.class_count_ + self.alpha * 2   # 1 by n_classes
+
+        # n_classes by n_features
         self.feature_log_prob_ = ( np.log(smoothed_fc) - np.log(smoothed_cc.reshape(-1, 1)) )
 
+
     def _joint_log_likelihood(self, X):
+        """
+        Calculate the posterior log probability of the samples X
+
+        https://en.wikipedia.org/wiki/Naive_Bayes_classifier#Bernoulli_naive_Bayes
+
+        """
 
         if self.binarize is not None:
             X = binarize(X, threshold = self.binarize)
 
-        n_classes, n_features = self.feature_log_prob_.shape
-        n_samples, n_features_X = X.shape
+        neg_prob = np.log(1 - np.exp(self.feature_log_prob_))
 
+        # Compute  neg_prob · (1 - X).T  as  ∑ neg_prob - X · neg_prob
+        jll = safe_sparse_dot(X, (self.feature_log_prob_ - neg_prob).T)
+        jll += self.class_log_prior_ + neg_prob.sum(axis=1)
+
+        return jll
 
 
 
