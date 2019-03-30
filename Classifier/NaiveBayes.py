@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import binarize, LabelBinarizer
+from sklearn.preprocessing import binarize, LabelBinarizer, label_binarize
 from sklearn.utils.extmath import safe_sparse_dot
 from scipy.sparse import issparse
 from collections import defaultdict
-from utils.tools import logsumexp, _check_partial_fit_first_call, label_binarize, _num_samples
+from utils.tools import logsumexp, _check_partial_fit_first_call
 import warnings
 
 # https://github.com/Arctanxy/learning_notes/blob/master/study/machine_learning/Bayes/NavieBayes.py
@@ -273,10 +273,11 @@ class GaussianNB(BaseNB):
         return np.array(joint_log_likelihood).T
 
 
-_ALPHA_MIN = 1e-10
+_ALPHA_MIN = 1e-8
 
 # todo: gaussian NB model is updated by computing new mean and sigma, given new batch of labelled data;
 # todo: how is it done in Multinomial NB ???
+
 
 
 class BaseDiscreteNB(BaseNB):
@@ -287,9 +288,7 @@ class BaseDiscreteNB(BaseNB):
     def _update_class_log_prior(self, class_prior=None):
         n_classes = len(self.classes_)
 
-        if class_prior is not None:
-            if n_classes != len(class_prior):
-                raise ValueError("Number of priors doesn't match number of classes! ")
+        if class_prior:
             self.class_log_prior = np.log(class_prior)
 
         elif self.fit_prior:
@@ -298,29 +297,14 @@ class BaseDiscreteNB(BaseNB):
         else:
             self.class_log_prior_ = np.full(n_classes, -np.log(n_classes))
 
-    def _check_alpha(self):
-        if np.min(self.alpha) < 0:
-            raise ValueError('Smoothing parameter alpha = %.1e. '
-                             'alpha should be > 0.' % np.min(self.alpha))
-        if isinstance(self.alpha, np.ndarray):
-            if not self.alpha.shape[0] == self.feature_count_.shape[1]:
-                raise ValueError("alpha should be a scalar or a numpy array "
-                                 "with shape [n_features]")
-        if np.min(self.alpha) < _ALPHA_MIN:
-            warnings.warn('alpha too small will result in numeric errors, '
-                          'setting alpha = %.1e' % _ALPHA_MIN)
-            return np.maximum(self.alpha, _ALPHA_MIN)
-        return self.alpha
 
-
-    def partial_fit(self, X, y, classes=None, sample_weight=None):
+    def partial_fit(self, X, y, classes=None):
         """
         Incremental fit on a batch of samples.
 
         :param X: array-like, sparse matrix, shape = [n_samples, n_features]
         :param y: array-like, shape = [n_samples]
         :param classes:  array-like, shape = [n_classes] (default=None)
-        :param sample_weight:  array-like, shape = [n_samples] (default=None)
         :return:
         """
 
@@ -332,61 +316,38 @@ class BaseDiscreteNB(BaseNB):
             self.class_count_ = np.zeros(n_effective_classes, dtype=np.float64)
             self.feature_count_ = np.zeros((n_effective_classes, n_features), dtype=np.float64)
 
-        elif n_features != self.coef_.shape[1]:
-            msg = "Number features %d does not match previous data %d"
-            raise ValueError(msg%(n_features, self.coef_.shape[1]))
-
-
-        Y = label_binarize(y, classes=self.class_count_)  #todo:
+        Y = label_binarize(y, classes=self.class_count_)  # one-hot encoding for each sample
         if Y.shape[1] == 1:
             Y = np.concatenate((1 - Y, Y), axis=1)
-
-        n_samples, n_classes = Y.shape
-
-        if X.shape[0] != Y.shape[0]:
-            msg = "X.shape[0]=%d and y.shape[0]=%d are incompatible."
-            raise ValueError(msg % (X.shape[0], y.shape[0]))
-
-
         Y = Y.astype(np.float64)
-        if sample_weight is not None:
-            sample_weight = np.atleast_2d(sample_weight)
-            Y *= sample_weight.T
 
         class_prior = self.class_prior
 
-        self._count(X, Y) # todo: learn from each individual implementation
-
-        alpha = self._check_alpha()
-        self._update_feature_log_prob(alpha)
+        self._count(X, Y)
+        self._update_feature_log_prob()
         self._update_class_log_prior(class_prior=class_prior)
+
         return self
 
 
-    def fit(self, X, y, sample_weight=None):
+    def fit(self, X, y):
         """
         Fit the Naive Bayes classifier ccording to X, y
         :param X: array-like, sparse matrix, shape = [n_samples, n_features]
         :param y: array-like, shape = [n_samples]
-        :param sample_weight: array-like, shape = [n_samples], (default=None)
         :return: self, object
         """
 
         n_samples, n_features = X.shape
 
         labelbin = LabelBinarizer()
-        Y = labelbin.fit_transform(y)
+        Y = labelbin.fit_transform(y)  # one-hot encoding for each sample
         self.classes_ = labelbin.classes_
         if Y.shape[1] == 1:
             Y = np.concatenate((1 - Y, Y), axis=1)
-
         Y = Y.astype(np.float64)
-        if sample_weight is not None:
-            sample_weight = np.atleast_2d(sample_weight)
-            Y *= sample_weight.T
 
         class_prior = self.class_prior
-
 
         # count raw events from data
         n_effective_classes = Y.shape[1]
@@ -394,8 +355,7 @@ class BaseDiscreteNB(BaseNB):
         self.feature_count_ = np.zeros((n_effective_classes, n_features), dtype=np.float64)
 
         self._count(X,Y)
-        alpha = self._check_alpha()
-        self._update_feature_log_prob(alpha)
+        self._update_feature_log_prob()
         self._update_class_log_prior(class_prior=class_prior)
 
         return self
@@ -421,6 +381,9 @@ class MultinomialNB(BaseDiscreteNB):
     multinomial distribution normally requires integer feature counts. However,
     in practice, fractional counts such as tf-idf may also work.
 
+    Think of MultinomialNB as text classification based on word counts and Bag-of-Words model.
+    A Feature is a word; Feature value is word count;
+    Keep this in mind and it would help understanding it.
     """
 
     def __init__(self, alpha=1.0, fit_prior=True, class_prior=None):
@@ -428,84 +391,51 @@ class MultinomialNB(BaseDiscreteNB):
         self.fit_prior = fit_prior
         self.class_prior = class_prior
 
+
     def _count(self, X, Y):
         """
-        Count and smooth feature occurrences.
-        :param X:
-        :param Y:
-        :return:
+        Count number of appearance of each class
+        For each class, count number of appearance of each feature
         """
 
-        if np.any((X.data if issparse(X) else X) < 0):
-            raise ValueError("Input X must be non-negative")
-
-        self.feature_count_ += safe_sparse_dot(Y.T, X) # n_classes by n_features,
-                                                       # self.feature_count_[i][j] = count of feature j in class i
-        self.class_count_ += Y.sum(axis=0)
+        # Y is n_samples by n_classes. Each row represents a sample whose label is one-hot encoded
+        # self.feature_count_[i][j] = count of feature j in class i
+        self.feature_count_ += safe_sparse_dot(Y.T, X) # n_classes by n_features
+        self.class_count_ += Y.sum(axis=0)             # 1 by n_classes
 
 
-    def _update_feature_log_prob(self, alpha):
+    def _update_feature_log_prob(self):
         """
-        Applying smoothing to raw counts and recompute log probabilities.
-        :param alpha:
-        :return:
-        """
-        smoothed_fc = self.feature_count_ + alpha  # feature count
-        smoothed_cc = smoothed_fc.sum(axis=1)      # cumulative count
+        1. Applying smoothing to feature counts
+        2. Recompute log probabilities of features given class labels. Computes part of P(x|C):
+            P_ki = probability of feature i given class k
+            log(P_ki) = features log probability
 
-        self.feature_log_prob_ = (np.log(smoothed_fc)) - np.log(smoothed_cc.reshape(-1,1))
+        p.s. given class k, prob of all features i should sum to 1.0
+
+        To understand why this is calculated this way, Look at the math derivation in:
+        https://en.wikipedia.org/wiki/Naive_Bayes_classifier#Multinomial_naive_Bayes
+
+        The multinomial calculatioin becomes a linear calculation when expressed in log-space
+
+        """
+        smoothed_fc = self.feature_count_ + self.alpha  # n_classes by n_features
+        smoothed_cc = smoothed_fc.sum(axis=1)           # n_classes by 1    # cumulative count for each class
+
+        self.feature_log_prob_ = (np.log(smoothed_fc)) - np.log(smoothed_cc.reshape(-1,1)) # n_classes by n_features
 
 
     def _joint_log_likelihood(self, X):
-        """ Computes posterior log probability of the samples X """
+        """
+        Computes posterior log probability of the samples X
+
+        To understand why this is calculated this way, Look at the math derivation in:
+        https://en.wikipedia.org/wiki/Naive_Bayes_classifier#Multinomial_naive_Bayes
+
+        The multinomial calculatioin becomes a linear calculation when expressed in log-space
+
+        """
         return ( safe_sparse_dot(X, self.feature_log_prob_.T) + self.class_log_prior_ )
-
-
-
-class ComplementNB(BaseDiscreteNB):
-    """
-    Complement Naive Bayes; designed to correct "severe assumptions" made by multinomial Naive Bayes.
-    It is good gor imbalanced data sets
-
-    parameters
-    ----------
-    alpha: float, additive smoothing parameter (0 for no smoothing)
-
-    fit_prior: boolean, optional
-            Only used in edge case with a single class in the training set
-
-    ...
-
-    """
-
-    def __init__(self, alpha=1.0, fit_prior=True, class_prior= None, norm=False):
-        self.alpha = alpha
-        self.fit_prior = fit_prior
-        self.class_prior = class_prior
-        self.norm = norm
-
-
-    def _count(self, X, Y):
-        """ Count feature Occurrences """
-
-        self.feature_count_ += safe_sparse_dot(Y.T, X) # n_classes by n_features,
-                                                       # self.feature_count_[i][j] = count of feature j in class i
-
-        self.class_count_ += Y.sum(axis=0)
-        self.feature_all_ = self.feature_count_.sum(axis=0)
-
-
-    def _update_feature_log_prob(self, alpha):
-        """ Apply smoothing to raw counts and compute the weights """
-
-        comp_count = self.feature_all_ + alpha - self.feature_count_
-        logged = np.log(comp_count / comp_count.sum(axis=1, keepdims=True))
-
-        # todo: not really popular model?
-        pass
-
-    def _joint_log_likelihood(self, X):
-        pass
 
 
 
@@ -533,11 +463,11 @@ class BernoulliNB(BaseDiscreteNB):
         self.class_count_ += Y.sum(axis=0)
 
 
-    def _update_feature_log_prob(self, alpha):
+    def _update_feature_log_prob(self):
         """Apply smoothing to raw counts and recompute log probabilities"""
 
-        smoothed_fc = self.feature_count_ + alpha
-        smoothed_cc = self.class_count_ + alpha * 2
+        smoothed_fc = self.feature_count_ + self.alpha
+        smoothed_cc = self.class_count_ + self.alpha * 2
         self.feature_log_prob_ = ( np.log(smoothed_fc) - np.log(smoothed_cc.reshape(-1, 1)) )
 
     def _joint_log_likelihood(self, X):

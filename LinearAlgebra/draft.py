@@ -1,5 +1,14 @@
 import numpy as np
+from sklearn.preprocessing import binarize, LabelBinarizer, label_binarize
 
+
+y = [1,6,1,6]
+classes = [1,2,4,6,8]
+class_counts = [0,0,0,0,0,0,0]
+
+print(label_binarize(y, classes))
+
+exit()
 
 x = np.random.rand(10, 6)
 

@@ -1,7 +1,6 @@
 import numpy as np
 import numbers
-
-
+from sklearn.preprocessing import binarize, LabelBinarizer, label_binarize
 
 
 def _num_samples(x):
@@ -28,42 +27,6 @@ def _num_samples(x):
             return len(x)
     else:
         return len(x)
-
-
-def label_binarize(y, classes, neg_label=0, pos_label=1, sparse_output=False):
-    """
-    Binarize labels in one-vs-all fashion.
-    Used to extend binary classification methods into multi-class classification methods.
-
-    :param y:
-    :param classes:
-    :param neg_label:
-    :param pos_label:
-    :param sparse_output:
-    :return:
-    """
-    if not isinstance(y, list):
-        # XXX Workaround that will be removed when list of list format is
-        # dropped
-        raise ValueError("y must be list.")
-    else:
-        if _num_samples(y) == 0:
-            raise ValueError('y has 0 samples: %r' % y)
-    if neg_label >= pos_label:
-        raise ValueError("neg_label={0} must be strictly less than "
-                         "pos_label={1}.".format(neg_label, pos_label))
-
-    if (sparse_output and (pos_label == 0 or neg_label != 0)):
-        raise ValueError("Sparse binarization is only supported with non "
-                         "zero pos_label and zero neg_label, got "
-                         "pos_label={0} and neg_label={1}"
-                         "".format(pos_label, neg_label))
-
-
-
-    return y
-
-
 
 
 
