@@ -2,9 +2,27 @@ import numpy as np
 from sklearn.preprocessing import binarize, LabelBinarizer, label_binarize
 
 
-y = [1,6,1,6]
-classes = [1,2,4,6,8]
-class_counts = [0,0,0,0,0,0,0]
+
+
+x = [[1,2,3,4,5,6],
+     [2, 4, 6, 8, 10, 12],
+     [1, 2, 3, 4, 5, 6],
+     [2, 4, 6, 8, 10, 12],
+     ]
+
+y = [[2],[2],[2],[2],[2],[200]]
+y = [2,2,2,2,2,200]
+
+
+x = np.asarray(x)
+y = np.asarray(y)
+
+print(np.dot(x, y))
+
+
+print(x*y)
+
+exit()
 
 print(label_binarize(y, classes))
 

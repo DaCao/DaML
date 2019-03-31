@@ -1,7 +1,5 @@
 import numpy as np
 import numbers
-from sklearn.preprocessing import binarize, LabelBinarizer, label_binarize
-
 
 def _num_samples(x):
     """Return number of samples in array-like x."""
